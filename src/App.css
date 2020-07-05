@@ -13,17 +13,25 @@
   font-size: 20px;
 }
 
-.input {
-  height: 20px;
-  font-size: 15px;
+.userInput {
+  height: 25px;
+  font-size: 20px;
   margin: 10px;
+  border: 2px solid black;
 }
 
-button {
+.button {
   height: 25px;
 }
 
 button:hover {
   background-color: #757c88;
   color: white;
+}
+.key {
+  margin: auto
+}
+
+h1 {
+  text-align: center;
 }
