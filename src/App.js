@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import Keyboard from './Keyboard';
-// import firebase from './firebase';
+import firebase from './firebase';
 
 const App = () => {
 
   const [userInput, setUserInput] = useState("");
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [comment, setComment] = useState("");
   const [shouldShowAnswer, setShouldShowAnswer] = useState(false);
   const [mathQuestion, setMathQuestion] = useState(null);
@@ -20,48 +19,76 @@ const App = () => {
   }
 
   useEffect(() => {
-    // let ref = firebase.database().ref("/mathsQuiz");
-    // ref.once("value", (data) => {
-    //   let newData = data.val();
-    //   setScore(newData);
-    //   console.log(newData)
-    // })
+    let ref = firebase.database().ref("/mathsQuiz");
+    ref.once("value", (data) => {
+      let newData = data.val();
+      setScore(newData);
+    })
     generateQuestion();
   },[])
 
+  // useEffect(() => {
+  //   submitHandler();
+  // },[userInput])
+
   const nextHandler = () => {
     generateQuestion();
-    setIsSubmitted(false);
     setShouldShowAnswer(false);
     setUserInput("");
   }
 
   const submitHandler = () => {
-    let checkAnswerComment = "";
+    let newScore = score;
     if (userInput === mathQuestion.answer) {
-      checkAnswerComment = "Correct!"
-      setScore(score + 1);
-    } else {
-      checkAnswerComment = "Incorrect! Answer: " + mathQuestion.answer;
+      setComment("Correct!")
+      newScore += 1;
+
+      setTimeout(() => {
+        nextHandler();
+      }, 500)
+
+    } else if (!(userInput === mathQuestion.answer) || !(userInput[0] === mathQuestion.answer[0])) {
+      setComment("Incorrect! Answer: " + mathQuestion.answer);
+
+      setTimeout(() => {
+        nextHandler();
+      }, 3000)
+
     }
-    setComment(checkAnswerComment);
+    setScore(newScore);
     setShouldShowAnswer(true);
-    setIsSubmitted(true);
-    // firebase.database().ref('/mathsQuiz').set(score);
+    firebase.database().ref('/mathsQuiz').set(newScore);
   }
+
+  // const submitHandler = () => {
+  //   let newScore = score;
+  //   if (userInput === mathQuestion.answer) {
+  //     setComment("Correct!");
+  //     newScore += 1;
+  //   } else if (!(userInput === mathQuestion.answer) || !(userInput[0] === mathQuestion.answer[0])) {
+  //     setComment("Incorrect! Answer: " + mathQuestion.answer);
+  //   } 
+  //   setShouldShowAnswer(true);
+  //   setScore(newScore);
+  // }
 
   const onClickHandler = (number) => {
-    setUserInput(userInput + number);
+    let newInput = userInput + number;
+    if (newInput.length > 2) {
+      newInput = userInput;
+    }
+    setUserInput(newInput);
   }
 
-  if (mathQuestion) {
+  if (mathQuestion && score) {
     return (
       <div className="App">
         <h1>Maths Quiz</h1>
         <div className="quiz">
+          <h2>Your Score: {score}</h2>
           <div className="question">{mathQuestion.question}</div>
           <div className="userInput">{userInput}</div>
-          {isSubmitted ? <button onClick={nextHandler} className="buttons">next</button> : <button onClick={submitHandler} className="buttons">submit</button>}
+          <button onClick={submitHandler} className="button">submit</button>
           {shouldShowAnswer ? <div>{comment}</div> : null}
           <Keyboard handler={onClickHandler}/>
         </div>
@@ -75,10 +102,5 @@ const App = () => {
 export default App;
 
 // TO DO:
-// 1. custom keypad [done]
-// 2. input box -> div [done]
-// 3. set limit digits of input
-// 4. score 1 for correct ans, 0 for incorrect [done]
-// 5. save score to firebase
-// 6. harder maths quiz
-// 7. (hard) auto submit
+// 1. (hard) auto submit
+// 2. auto next [done]
