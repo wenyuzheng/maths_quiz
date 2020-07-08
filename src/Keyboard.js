@@ -7,9 +7,9 @@ const Keyboard = (props) => {
     return(
         <div className="keyboard">
             {numbers.map((number) => {
-                return <button onClick={() => props.handler(number)} key={number}>{number}</button>
+                return <button onClick={() => props.onClickHandler(number)} key={number}>{number}</button>
             })}
-            <button className="zero" onClick={() => props.handler(0)}>0</button>
+            <button className="zero" onClick={() => props.onClickHandler(0)}>0</button>
         </div>
     )
 }
