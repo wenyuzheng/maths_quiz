@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import './App.css';
 import firebase from './firebase';
-import AnsCorrectness from './AnsCorrectness';
-import GenerateQuestion from './GenerateQuestion';
+import './App.css';
 import QuizPage from './QuizPage';
+import RegisterPage from './RegisterPage';
 
 const App = () => {
-  const [userInput, setUserInput] = useState("");
-  const [comment, setComment] = useState("");
-  const [mathQuestion, setMathQuestion] = useState(null);
-  const [score, setScore] = useState(0);
-  const [correctness, setCorrectness] = useState(0);
 
-  const [userEmail, setUserEmail] = useState("");
-  const [userPassword, setUserPassword] = useState("");
   const [userUid, setUserUid] = useState(null);
 
   useEffect(() => {
@@ -21,96 +13,15 @@ const App = () => {
       if (user) {
         console.log("Signed In: ", user);
         setUserUid(user.uid);
-
-        firebase.database().ref(`/users/${user.uid}`).once('value').then(data => {
-          if (data.val() === null) {
-            let newObject = {score: 0, question: GenerateQuestion()};
-            firebase.database().ref(`/users/${user.uid}`).set(newObject);
-            setScore(newObject.score);
-            setMathQuestion(newObject.question);
-          } else {
-            setScore(data.val().score);
-            setMathQuestion(data.val().question);
-          }
-        })
       } else {
         console.log("NOT signed in");
       }
     })
   }, [])
 
-  useEffect(() => {
-    if (correctness !== 0) submitHandler();
-  }, [correctness, setUserInput])
-
-  useEffect(() => {
-    if (mathQuestion) setCorrectness(AnsCorrectness(userInput, mathQuestion.answer));
-  }, [userInput, setCorrectness, mathQuestion])
-
-  const nextHandler = () => {
-    setUserInput("");
-    const newMathQuestion = GenerateQuestion();
-    setMathQuestion(newMathQuestion);
-    firebase.database().ref(`/users/${userUid}/question`).set(newMathQuestion);
-  }
-
-  const submitHandler = () => {
-    let newScore = score;
-    if (correctness === 1) {
-      setComment("Correct!")
-      newScore += 1;
-
-      setTimeout(() => {
-        nextHandler();
-      }, 500)
-
-    } else if (correctness === -1) {
-      setComment("Incorrect! Answer: " + mathQuestion.answer);
-
-      setTimeout(() => {
-        nextHandler();
-      }, 2000)
-    }
-    setScore(newScore);
-    firebase.database().ref(`/users/${userUid}/score`).set(newScore);
-  }
-
-  const registerHandler = () => {
-    firebase.auth().createUserWithEmailAndPassword(userEmail, userPassword).catch((error) => {
-      console.log("errorCode: " + error.code);
-      alert(error.message);
-    });
-  }
-
-  const signOutHanlder = () => {
-    firebase.auth().signOut().then(() => {
-      setUserUid(null);
-    }).catch((error) => {
-      console.log("error: " + error)
-    });
-  }
-
-  const signInHandler = () => {
-    firebase.auth().signInWithEmailAndPassword(userEmail, userPassword).catch((error) => {
-      console.log("errorCode: " + error.code);
-      alert(error.message);
-    });
-  }
-
   return (
     <div className="App">
-      {userUid ?
-        <div>
-          <button onClick={signOutHanlder} className="buttons">Sign Out</button>
-          <QuizPage score={score} mathQuestion={mathQuestion} correctness={correctness} userInput={userInput} setUserInput={setUserInput} comment={comment} />
-        </div> :
-        <div className="form">
-          Email: <input onChange={(e) => { setUserEmail(e.target.value) }} /> <br></br>
-          Password: <input type="password" onChange={(e) => { setUserPassword(e.target.value) }} /> <br></br>
-          <button onClick={registerHandler} className="buttons">Register</button>
-          <button onClick={signInHandler} className="buttons">Sign in</button>
-        </div>
-      }
+      { userUid ? <QuizPage userUid={userUid} setUserUid={setUserUid} /> : <RegisterPage /> }
     </div>
   );
 }
@@ -118,7 +29,7 @@ const App = () => {
 export default App;
 
 // TO DO:
-// 1. create user [done]
-// 2. css
-// 3. save currentQuestion [done]
+// 1. router 
+// 2. loading
+// 3. css
 // 4. re-factor code

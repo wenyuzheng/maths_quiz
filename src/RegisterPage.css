@@ -1,0 +1,11 @@
+.form {
+  border: 1px gray solid;
+  width: 250px;
+  padding: 30px 80px;
+  margin: 50px auto;
+  text-align: right;
+}
+
+input {
+  margin: 5px auto;
+}
