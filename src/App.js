@@ -22,27 +22,22 @@ const App = () => {
         console.log("Signed In: ", user);
         setUserUid(user.uid);
 
-        firebase.database().ref(`/users/${user.uid}/score`).once('value').then(data => {
+        firebase.database().ref(`/users/${user.uid}`).once('value').then(data => {
           if (data.val() === null) {
-            setScore(0);
+            let newObject = {score: 0, question: GenerateQuestion()};
+            firebase.database().ref(`/users/${user.uid}`).set(newObject);
+            setScore(newObject.score);
+            setMathQuestion(newObject.question);
           } else {
-            setScore(data.val());
-          }
-        })
-        firebase.database().ref(`/users/${user.uid}/question`).once('value').then(data => {
-          if (data.val() === null) {
-            const newQuestion = GenerateQuestion();
-            setMathQuestion(newQuestion);
-            // setMathQuestion(GenerateQuestion());
-          } else {
-            setMathQuestion(data.val());
+            setScore(data.val().score);
+            setMathQuestion(data.val().question);
           }
         })
       } else {
         console.log("NOT signed in");
       }
     })
-  },[])
+  }, [])
 
   useEffect(() => {
     if (correctness !== 0) submitHandler();
@@ -54,7 +49,9 @@ const App = () => {
 
   const nextHandler = () => {
     setUserInput("");
-    setMathQuestion(GenerateQuestion());
+    const newMathQuestion = GenerateQuestion();
+    setMathQuestion(newMathQuestion);
+    firebase.database().ref(`/users/${userUid}/question`).set(newMathQuestion);
   }
 
   const submitHandler = () => {
@@ -86,7 +83,6 @@ const App = () => {
   }
 
   const signOutHanlder = () => {
-    firebase.database().ref(`/users/${userUid}/question`).set(mathQuestion);
     firebase.auth().signOut().then(() => {
       setUserUid(null);
     }).catch((error) => {
@@ -104,9 +100,9 @@ const App = () => {
   return (
     <div className="App">
       {userUid ?
-        <div>          
+        <div>
           <button onClick={signOutHanlder} className="buttons">Sign Out</button>
-          <QuizPage score={score} mathQuestion={mathQuestion} correctness={correctness} userInput={userInput} setUserInput={setUserInput} comment={comment}/>
+          <QuizPage score={score} mathQuestion={mathQuestion} correctness={correctness} userInput={userInput} setUserInput={setUserInput} comment={comment} />
         </div> :
         <div className="form">
           Email: <input onChange={(e) => { setUserEmail(e.target.value) }} /> <br></br>

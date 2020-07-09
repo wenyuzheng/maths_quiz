@@ -3,7 +3,7 @@ import Keyboard from './Keyboard';
 import './QuizPage.css';
 
 const QuizPage = (props) => {
-    if (props.mathQuestion && props.score) {
+    if (props.mathQuestion) {
         return (
             <div>
                 <h1>Maths Quiz</h1>
