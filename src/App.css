@@ -2,37 +2,24 @@
   text-align: center;
 }
 
-.quiz {
-  width: 400px;
-  border: 1px solid black;
-  margin: auto;
-  padding: 20px;
-}
-
-.question {
-  font-size: 20px;
-}
-
-.userInput {
-  height: 25px;
+.form {
+  border: 1px gray solid;
   width: 250px;
-  font-size: 20px;
-  margin: 10px auto;
-  border: 2px solid black;
+  padding: 30px 80px;
+  margin: 50px auto;
+  text-align: right;
 }
 
-.button {
+.buttons {
   height: 25px;
+  margin: 10px;
 }
 
 button:hover {
   background-color: #757c88;
   color: white;
 }
-.key {
-  margin: auto
-}
 
-h1 {
-  text-align: center;
+input {
+  margin: 5px auto;
 }
