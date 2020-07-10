@@ -5,6 +5,7 @@ import AnsCorrectness from './AnsCorrectness';
 import GenerateQuestion from './GenerateQuestion';
 import './QuizPage.css';
 import Loading from './Loading';
+import NavBar from './NavBar';
 
 const QuizPage = (props) => {
 
@@ -64,24 +65,16 @@ const QuizPage = (props) => {
         firebase.database().ref(`/users/${props.userUid}/score`).set(newScore);
     }
 
-    const signOutHanlder = () => {
-        firebase.auth().signOut().then(() => {
-            props.setUserUid(null);
-        }).catch((error) => {
-            console.log("error: " + error)
-        });
-    }
-
     if (mathQuestion) {
         return (
             <div>
-                <button onClick={signOutHanlder} className="buttons">Sign Out</button>
+                <NavBar setUserUid={props.setUserUid} userUid={props.userUid}/>
                 <h1>Maths Quiz</h1>
                 <div className="quiz">
                     <h2>Your Score: {score}</h2>
                     <div className="question">{mathQuestion.question}</div>
                     <div className="userInput">{userInput}</div>
-                    {correctness === 0 ? <Keyboard onClickHandler={(number) => setUserInput(userInput + number)} /> : <div>{comment}</div>}
+                    {correctness === 0 ? <Keyboard onClickHandler={(number) => setUserInput(userInput + number)} /> : <div>{comment}</div>} 
                 </div>
             </div>
         );

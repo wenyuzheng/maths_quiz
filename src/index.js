@@ -5,6 +5,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import Loading from './Loading';
+import Profile from './Profile';
 
 const Test = () => {
   return <h1>Test</h1>
@@ -15,6 +16,7 @@ const Root = () => {
     <BrowserRouter>
       <Switch>
         <Route path="/Load" component={Loading} />
+        <Route path="/Profile" component={Profile} />
         <Route path="/Test" component={Test}/>
         <Route path="/" component={App} />
       </Switch>
