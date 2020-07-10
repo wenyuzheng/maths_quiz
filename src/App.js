@@ -3,33 +3,41 @@ import firebase from './firebase';
 import './App.css';
 import QuizPage from './QuizPage';
 import RegisterPage from './RegisterPage';
+import Loading from './Loading';
 
 const App = () => {
 
   const [userUid, setUserUid] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        console.log("Signed In: ", user);
         setUserUid(user.uid);
+        console.log("Signed In: ", user);
       } else {
         console.log("NOT signed in");
       }
+      setIsLoading(false);
     })
   }, [])
 
-  return (
-    <div className="App">
-      { userUid ? <QuizPage userUid={userUid} setUserUid={setUserUid} /> : <RegisterPage /> }
-    </div>
-  );
+  if (isLoading) {
+    return <Loading />
+  } else {
+    return (
+      <div className="App">
+        {userUid ? <QuizPage userUid={userUid} setUserUid={setUserUid} /> : <RegisterPage />}
+      </div>
+    );
+  }
 }
 
 export default App;
 
 // TO DO:
-// 1. router 
-// 2. loading
-// 3. css
-// 4. re-factor code
+// 1. router [done]
+// 2. loading [done]
+// 3. DB Objects?
+// 4. css
+// 5. re-factor code

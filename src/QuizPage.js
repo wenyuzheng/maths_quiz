@@ -4,6 +4,7 @@ import Keyboard from './Keyboard';
 import AnsCorrectness from './AnsCorrectness';
 import GenerateQuestion from './GenerateQuestion';
 import './QuizPage.css';
+import Loading from './Loading';
 
 const QuizPage = (props) => {
 
@@ -85,7 +86,7 @@ const QuizPage = (props) => {
             </div>
         );
     } else {
-        return <h1>Loading...</h1>
+        return <Loading />
     }
 }
 

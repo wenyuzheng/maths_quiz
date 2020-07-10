@@ -1,13 +1,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter, Switch, Route } from "react-router-dom";
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import Loading from './Loading';
+
+const Test = () => {
+  return <h1>Test</h1>
+}
+
+const Root = () => {
+  return (
+    <BrowserRouter>
+      <Switch>
+        <Route path="/Load" component={Loading} />
+        <Route path="/Test" component={Test}/>
+        <Route path="/" component={App} />
+      </Switch>
+    </BrowserRouter>
+  )
+}
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+    <Root />,
   document.getElementById('root')
 );
 
