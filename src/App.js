@@ -34,10 +34,3 @@ const App = () => {
 }
 
 export default App;
-
-// TO DO:
-// 1. router [done]
-// 2. loading [done]
-// 3. DB Objects?
-// 4. css
-// 5. re-factor code
